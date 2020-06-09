@@ -21,8 +21,8 @@ test:
 lint:
 	golint -set_exit_status  ./...
 
-docker: test
+docker:
 	docker build -t ${DOCKER_IMG}:${DOCKER_TAG} .
 
-docker-push: docker
+docker-push:
 	docker push ${DOCKER_IMG}:${DOCKER_TAG}
