@@ -44,15 +44,3 @@ jobs:
       run: bash <(curl -s https://codecov.io/bash)
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-    - name: Build Docker
-      run: make docker
-    
-    - name: Login to registry
-      uses: azure/docker-login@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Push to registry
-      run: make docker-push
