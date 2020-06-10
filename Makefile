@@ -16,7 +16,7 @@ run-docker:
 	docker run ${DOCKER_IMG}:${DOCKER_TAG}
 
 test:
-	 go test -v -cover ./internal/.../
+	go test -race -coverprofile=coverage.txt -covermode=atomic ./internal/.../
 
 lint:
 	golint -set_exit_status  ./...

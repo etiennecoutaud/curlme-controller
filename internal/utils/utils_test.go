@@ -1,8 +1,13 @@
 package utils_test
 
 import (
+	"context"
 	"errors"
 	"github.com/etiennecoutaud/curlme-controller/internal/utils"
+	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/kubernetes/fake"
 	"testing"
 )
 
@@ -89,4 +94,90 @@ func TestVerifyValueFormat(t *testing.T) {
 }
 
 func TestSplitAnnotationValue(t *testing.T) {
+	type Output struct {
+		key string
+		value string
+		err error
+	}
+
+	tests := []struct{
+		input string
+		output Output
+	}{
+		{
+			input: "foo=bar",
+			output: Output{
+				key: "",
+				value: "",
+				err: errors.New("annotation value not well format, expect value=curl-url"),
+			},
+		},
+		{
+			input: "foo=bar.com",
+			output: Output{
+				key: "foo",
+				value: "bar.com",
+				err: nil,
+			},
+		},
+		{
+			input: "foo =bar.com",
+			output: Output{
+				key: "",
+				value: "",
+				err: errors.New("annotation value not well format, expect value=curl-url"),
+			},
+		},
+	}
+
+	for _, test := range tests {
+		key, value, err := utils.SplitAnnotationValue(test.input)
+		if key != test.output.key || value != test.output.value ||
+			(test.output.err == nil && err != nil) && (err.Error() != test.output.err.Error())  {
+			t.Errorf("Expected: %s, %s, %v, Got: %s, %s, %v", test.output.key, test.output.value, test.output.err, key, value, err)
+		}
+	}
+}
+
+func TestContainsAnnotation(t *testing.T) {
+	tests := []struct{
+		clientSet kubernetes.Interface
+		expectedResult bool
+	}{
+		{
+			clientSet: fake.NewSimpleClientset(&v1.ConfigMap{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:                       "test",
+					Namespace:                  "default",
+					Annotations: map[string]string{
+						"x-k8s.io/curl-me-that": "foo",
+					},
+				},
+			}),
+			expectedResult: true,
+		},
+		{
+			clientSet: fake.NewSimpleClientset(&v1.ConfigMap{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:                       "test",
+					Namespace:                  "default",
+					Annotations: map[string]string{
+						"foo": "bar",
+					},
+				},
+			}),
+			expectedResult: false,
+		},
+	}
+
+	for _, test := range tests {
+		cm, err := test.clientSet.CoreV1().ConfigMaps("default").Get(context.TODO(), "test", metav1.GetOptions{})
+		if err != nil {
+			t.Error(err)
+		}
+		res := 	utils.ContainsAnnotation(cm)
+		if test.expectedResult != res {
+			t.Errorf("Expected %v, Got : %v", test.expectedResult, res)
+		}
+	}
 }

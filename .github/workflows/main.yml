@@ -8,8 +8,8 @@ on:
 
 jobs:
 
-  build:
-    name: Build
+  ci:
+    name: CI
     runs-on: ubuntu-latest
     steps:
 
@@ -39,7 +39,12 @@ jobs:
     
     - name: Test
       run: make test
-    
+
+    - name: Upload result
+      run: bash <(curl -s https://codecov.io/bash)
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
     - name: Build Docker
       run: make docker
     
