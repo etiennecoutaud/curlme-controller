@@ -2,7 +2,7 @@ GOOPTS=GOOS=darwin GOARCH=amd64 CGO_ENABLED=0
 DOCKER_IMG="etiennecoutaud/curlme-controller"
 DOCKER_TAG="latest"
 
-.PHONY: all build run-local test lint docker docker-push
+.PHONY: all build run-local test lint docker docker-push deploy
 
 all: lint test docker push
 
@@ -26,3 +26,6 @@ docker:
 
 docker-push:
 	docker push ${DOCKER_IMG}:${DOCKER_TAG}
+
+deploy:
+	kubectl apply -f manifests/all-in-one.yaml

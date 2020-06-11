@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"net/http"
 	"time"
 
 	kubeinformers "k8s.io/client-go/informers"
@@ -10,6 +11,7 @@ import (
 	"k8s.io/klog/v2"
 
 	"github.com/etiennecoutaud/curlme-controller/internal/controller"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"k8s.io/sample-controller/pkg/signals"
 )
 
@@ -42,6 +44,9 @@ func main() {
 	// notice that there is no need to run Start methods in a separate goroutine. (i.e. go kubeInformerFactory.Start(stopCh)
 	// Start method is non-blocking and runs all registered informers in a dedicated goroutine.
 	kubeInformerFactory.Start(stopCh)
+
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(":9100", nil)
 
 	if err = controller.Run(2, stopCh); err != nil {
 		klog.Fatalf("Error running controller: %s", err.Error())
