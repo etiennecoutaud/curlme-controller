@@ -32,6 +32,11 @@ To deploy the controller into your kubernetes cluster :
 $ kubectl apply -f https://raw.githubusercontent.com/etiennecoutaud/curlme-controller/master/manifests/all-in-one.yaml
 ```
 
+If you use `Prometheus operator` and `ServiceMonitor CRD` into your cluster. You can monitor your cluster with :
+```bash
+$ kubectl apply -f https://raw.githubusercontent.com/etiennecoutaud/curlme-controller/master/manifests/monitoring.yaml
+```
+
 ## Run locally
 
 To run the app localy make sure you have `go 1.13` install and `KUBECONFIG` environment var set.
