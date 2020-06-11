@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/etiennecoutaud/curlme-controller/internal/curl"
+	"github.com/etiennecoutaud/curlme-controller/internal/metrics"
 	"github.com/etiennecoutaud/curlme-controller/internal/utils"
 	"time"
 
@@ -43,6 +44,7 @@ type Controller struct {
 	workqueue workqueue.RateLimitingInterface
 	recorder record.EventRecorder
 	curl *curl.Curl
+	metrics *metrics.CurlmeMetrics
 }
 
 // New initiate a new controller
@@ -56,6 +58,7 @@ func New(
 	eventBroadcaster.StartRecordingToSink(&typedcorev1.EventSinkImpl{Interface: kubeclientset.CoreV1().Events("")})
 	recorder := eventBroadcaster.NewRecorder(scheme.Scheme, corev1.EventSource{Component: controllerAgentName})
 	c := curl.New()
+	metrics := metrics.New()
 
 	controller := &Controller{
 		kubeclientset:     kubeclientset,
@@ -64,6 +67,7 @@ func New(
 		workqueue:         workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "ConfigMaps"),
 		recorder:          recorder,
 		curl: c,
+		metrics: metrics,
 	}
 
 	klog.Info("Setting up event handlers")
@@ -133,6 +137,7 @@ func (c *Controller) processNextWorkItem() bool {
 			return fmt.Errorf("error syncing '%s': %s, requeuing", key, err.Error())
 		}
 		c.workqueue.Forget(obj)
+		c.metrics.CmSyncedCount.Inc()
 		klog.Infof("Successfully synced '%s'", key)
 		return nil
 	}(obj)

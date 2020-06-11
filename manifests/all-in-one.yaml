@@ -59,3 +59,7 @@ spec:
           ports:
           - containerPort: 9100
             name: metrics
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
