@@ -5,10 +5,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
+// CurlmeMetrics struct with all prom metrics usable into the controller
 type CurlmeMetrics struct {
 	CmSyncedCount prometheus.Counter
 }
 
+// New init all prometheus curlme metrics
 func New() *CurlmeMetrics {
 	cmSyncedCount := promauto.NewCounter(prometheus.CounterOpts{
 		Name: "curlme_configmap_synced_total",
