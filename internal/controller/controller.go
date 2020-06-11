@@ -30,21 +30,21 @@ const controllerAgentName = "configmap-curlme-controller"
 
 // Event messages
 const (
-	SuccessSynced = "Synced"
-	MessageResourceSynced = "configMap synced successfully"
-	ErrCallingURL = "Fail to retrieve message from URL"
+	SuccessSynced             = "Synced"
+	MessageResourceSynced     = "configMap synced successfully"
+	ErrCallingURL             = "Fail to retrieve message from URL"
 	ErrParsingAnnotationValue = "Cannot parse x-k8s.io/curl-me-that annotation value"
 )
 
 // Controller struct for curlme controller
 type Controller struct {
-	kubeclientset kubernetes.Interface
+	kubeclientset   kubernetes.Interface
 	configMapLister cmListers.ConfigMapLister
 	configMapSynced cache.InformerSynced
-	workqueue workqueue.RateLimitingInterface
-	recorder record.EventRecorder
-	curl *curl.Curl
-	metrics *metrics.CurlmeMetrics
+	workqueue       workqueue.RateLimitingInterface
+	recorder        record.EventRecorder
+	curl            *curl.Curl
+	metrics         *metrics.CurlmeMetrics
 }
 
 // New initiate a new controller
@@ -61,13 +61,13 @@ func New(
 	metrics := metrics.New()
 
 	controller := &Controller{
-		kubeclientset:     kubeclientset,
+		kubeclientset:   kubeclientset,
 		configMapLister: configMapInformer.Lister(),
 		configMapSynced: configMapInformer.Informer().HasSynced,
-		workqueue:         workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "ConfigMaps"),
-		recorder:          recorder,
-		curl: c,
-		metrics: metrics,
+		workqueue:       workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "ConfigMaps"),
+		recorder:        recorder,
+		curl:            c,
+		metrics:         metrics,
 	}
 
 	klog.Info("Setting up event handlers")
@@ -193,11 +193,9 @@ func (c *Controller) syncHandler(key string) error {
 		return err
 	}
 
-
 	c.recorder.Event(cm, corev1.EventTypeNormal, SuccessSynced, MessageResourceSynced)
 	return nil
 }
-
 
 func (c *Controller) enqueueCm(obj interface{}) {
 	var key string

@@ -15,7 +15,7 @@ var curlmeAnnotationKey = utils.GetCurlmeAnnotationKey()
 
 func TestGetAnnotationValue(t *testing.T) {
 	type Test struct {
-		Input map[string]string
+		Input          map[string]string
 		ExpectedResult string
 	}
 
@@ -40,7 +40,7 @@ func TestGetAnnotationValue(t *testing.T) {
 		},
 		{
 			Input: map[string]string{
-				"x-k8s.io/curl-me": "joke=curl-a-joke.herokuapp.com",
+				"x-k8s.io/curl-me":  "joke=curl-a-joke.herokuapp.com",
 				curlmeAnnotationKey: "joke=curl-a-joke.herokuapp.com",
 			},
 			ExpectedResult: "joke=curl-a-joke.herokuapp.com",
@@ -95,37 +95,37 @@ func TestVerifyValueFormat(t *testing.T) {
 
 func TestSplitAnnotationValue(t *testing.T) {
 	type Output struct {
-		key string
+		key   string
 		value string
-		err error
+		err   error
 	}
 
-	tests := []struct{
-		input string
+	tests := []struct {
+		input  string
 		output Output
 	}{
 		{
 			input: "foo=bar",
 			output: Output{
-				key: "",
+				key:   "",
 				value: "",
-				err: errors.New("annotation value not well format, expect value=curl-url"),
+				err:   errors.New("annotation value not well format, expect value=curl-url"),
 			},
 		},
 		{
 			input: "foo=bar.com",
 			output: Output{
-				key: "foo",
+				key:   "foo",
 				value: "bar.com",
-				err: nil,
+				err:   nil,
 			},
 		},
 		{
 			input: "foo =bar.com",
 			output: Output{
-				key: "",
+				key:   "",
 				value: "",
-				err: errors.New("annotation value not well format, expect value=curl-url"),
+				err:   errors.New("annotation value not well format, expect value=curl-url"),
 			},
 		},
 	}
@@ -133,22 +133,22 @@ func TestSplitAnnotationValue(t *testing.T) {
 	for _, test := range tests {
 		key, value, err := utils.SplitAnnotationValue(test.input)
 		if key != test.output.key || value != test.output.value ||
-			(test.output.err == nil && err != nil) && (err.Error() != test.output.err.Error())  {
+			(test.output.err == nil && err != nil) && (err.Error() != test.output.err.Error()) {
 			t.Errorf("Expected: %s, %s, %v, Got: %s, %s, %v", test.output.key, test.output.value, test.output.err, key, value, err)
 		}
 	}
 }
 
 func TestContainsAnnotation(t *testing.T) {
-	tests := []struct{
-		clientSet kubernetes.Interface
+	tests := []struct {
+		clientSet      kubernetes.Interface
 		expectedResult bool
 	}{
 		{
 			clientSet: fake.NewSimpleClientset(&v1.ConfigMap{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:                       "test",
-					Namespace:                  "default",
+					Name:      "test",
+					Namespace: "default",
 					Annotations: map[string]string{
 						"x-k8s.io/curl-me-that": "foo",
 					},
@@ -159,8 +159,8 @@ func TestContainsAnnotation(t *testing.T) {
 		{
 			clientSet: fake.NewSimpleClientset(&v1.ConfigMap{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:                       "test",
-					Namespace:                  "default",
+					Name:      "test",
+					Namespace: "default",
 					Annotations: map[string]string{
 						"foo": "bar",
 					},
@@ -175,7 +175,7 @@ func TestContainsAnnotation(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		res := 	utils.ContainsAnnotation(cm)
+		res := utils.ContainsAnnotation(cm)
 		if test.expectedResult != res {
 			t.Errorf("Expected %v, Got : %v", test.expectedResult, res)
 		}

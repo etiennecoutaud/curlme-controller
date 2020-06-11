@@ -29,3 +29,6 @@ docker-push:
 
 deploy:
 	kubectl apply -f manifests/all-in-one.yaml
+
+fmt:
+	go fmt ./...

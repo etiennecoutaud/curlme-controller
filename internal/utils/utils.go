@@ -43,7 +43,7 @@ func VerifyValueFormat(v string) error {
 }
 
 // SplitAnnotationValue split annotation format foo=bar into string foo and bar
-func SplitAnnotationValue(value string) (string,string,error) {
+func SplitAnnotationValue(value string) (string, string, error) {
 	err := VerifyValueFormat(value)
 	if err != nil {
 		return "", "", err
@@ -53,6 +53,6 @@ func SplitAnnotationValue(value string) (string,string,error) {
 }
 
 // GetCurlmeAnnotationKey return const use for testing package
-func GetCurlmeAnnotationKey() string{
+func GetCurlmeAnnotationKey() string {
 	return curlmeAnnotationKey
 }

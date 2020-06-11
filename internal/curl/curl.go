@@ -22,7 +22,7 @@ func New() *Curl {
 }
 
 // CallingURL call url to retrieve value
-func (c *Curl) CallingURL(url string) (string,error) {
+func (c *Curl) CallingURL(url string) (string, error) {
 	resp, err := c.netClient.Get(formatURL(url))
 	if err != nil {
 		return "", err
