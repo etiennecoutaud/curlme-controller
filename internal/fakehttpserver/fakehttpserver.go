@@ -26,21 +26,20 @@ func New() *FakeHTTPServer {
 	}
 }
 
-func (f *FakeHTTPServer) handler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(f.body))
-	w.WriteHeader(f.statusCode)
-}
-
 // Run start fake http server
 func (f *FakeHTTPServer) Run() {
 	f.wg.Add(1)
-	go func() {
+	go func(body string, sc int) {
 		defer f.wg.Done()
-		f.server.Handler = http.HandlerFunc(f.handler)
+		//f.server.Handler = http.HandlerFunc(f.handler)
+		f.server.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte(f.body))
+			w.WriteHeader(f.statusCode)
+		})
 		f.server.ListenAndServe()
-	}()
+	}(f.body, f.statusCode)
 	// Make sur Http server has time to start before handle request
-	time.Sleep(1 * time.Second)
+	time.Sleep(5 * time.Second)
 }
 
 // Stop shutdown http server
