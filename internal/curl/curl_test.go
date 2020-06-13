@@ -2,7 +2,7 @@ package curl_test
 
 import (
 	"github.com/etiennecoutaud/curlme-controller/internal/curl"
-	"github.com/etiennecoutaud/curlme-controller/internal/fakeHTTPServer"
+	"github.com/etiennecoutaud/curlme-controller/internal/fakehttpserver"
 	"net/http"
 	"testing"
 )

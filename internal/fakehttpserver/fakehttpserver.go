@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"sync"
+	"time"
 )
 
 // FakeHTTPServer fake http server struct
@@ -38,7 +39,8 @@ func (f *FakeHTTPServer) Run() {
 		f.server.Handler = http.HandlerFunc(f.handler)
 		f.server.ListenAndServe()
 	}()
-	//time.Sleep(1 * time.Second)
+	// Make sur Http server has time to start before handle request
+	time.Sleep(1 * time.Second)
 }
 
 // Stop shutdown http server

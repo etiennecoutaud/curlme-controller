@@ -2,7 +2,7 @@ package controller_test
 
 import (
 	"github.com/etiennecoutaud/curlme-controller/internal/controller"
-	"github.com/etiennecoutaud/curlme-controller/internal/fakeHTTPServer"
+	"github.com/etiennecoutaud/curlme-controller/internal/fakehttpserver"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -160,21 +160,11 @@ func getKey(cm *corev1.ConfigMap, t *testing.T) string {
 	return key
 }
 
-func TestDoNothing(t *testing.T) {
-	f := newFixture(t)
-	cm := newConfigMap("test", map[string]string{
-		"foo": "bar",
-	}, nil)
-
-	f.configMapLister = append(f.configMapLister, cm)
-	f.objects = append(f.objects, cm)
-
-	f.run(getKey(cm, t))
-}
-
 func TestUpdateCMEmptyData(t *testing.T) {
 	f := newFixture(t)
 	fakeHTTPServer := fakehttpserver.New()
+	fakeHTTPServer.Run()
+
 	key := "joke"
 	body := "this is an awesome joke !"
 	fakeHTTPServer.SetBody(body)
@@ -193,33 +183,38 @@ func TestUpdateCMEmptyData(t *testing.T) {
 	f.configMapLister = append(f.configMapLister, initialCm)
 	f.objects = append(f.objects, initialCm)
 
-	fakeHTTPServer.Run()
+
 	f.expectUpdateCMStatusAction(expectedCm)
 	f.run(getKey(initialCm, t))
 	fakeHTTPServer.Stop()
 }
-//
-//func TestUpdateCMWithData(t *testing.T) {
-//	f := newFixture(t)
-//	fakeHTTPServer := fakeHTTPServer.New()
-//
-//	key := "joke"
-//	body := "this is an awesome joke !"
-//	fakeHTTPServer.SetBody(body)
-//	fakeHTTPServer.SetStatusCode(http.StatusOK)
-//
-//	cm := newConfigMap("test",
-//		map[string]string{
-//			"x-k8s.io/curl-me-that": key + "=" + fakeHTTPServer.GetServerAddr()},
-//		map[string]string{
-//			key: body,
-//		})
-//
-//	f.configMapLister = append(f.configMapLister, cm)
-//	f.objects = append(f.objects, cm)
-//
-//	fakeHTTPServer.Run()
-//	f.expectUpdateCMStatusAction(cm)
-//	f.run(getKey(cm, t))
-//	fakeHTTPServer.Stop()
-//}
+
+func TestUpdateCMData(t *testing.T) {
+	f := newFixture(t)
+	fakeHTTPServer := fakehttpserver.New()
+	fakeHTTPServer.Run()
+	key := "joke"
+	body := "this is an awesome joke !"
+	fakeHTTPServer.SetBody(body)
+	fakeHTTPServer.SetStatusCode(http.StatusOK)
+
+	initialCm := newConfigMap("test",
+		map[string]string{
+			"x-k8s.io/curl-me-that": key + "=" + fakeHTTPServer.GetServerAddr()},
+		map[string]string{
+			"foo": "bar",
+		})
+	expectedCm := newConfigMap("test",
+		map[string]string{
+			"x-k8s.io/curl-me-that": key + "=" + fakeHTTPServer.GetServerAddr()},
+		map[string]string{
+			"foo": "bar",
+			key: body,
+		})
+	f.configMapLister = append(f.configMapLister, initialCm)
+	f.objects = append(f.objects, initialCm)
+
+	f.expectUpdateCMStatusAction(expectedCm)
+	f.run(getKey(initialCm, t))
+	fakeHTTPServer.Stop()
+}
