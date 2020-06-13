@@ -132,7 +132,7 @@ func (c *Controller) processNextWorkItem() bool {
 			utilruntime.HandleError(fmt.Errorf("expected string in workqueue but got %#v", obj))
 			return nil
 		}
-		if err := c.syncHandler(key); err != nil {
+		if err := c.SyncHandler(key); err != nil {
 			c.workqueue.AddRateLimited(key)
 			return fmt.Errorf("error syncing '%s': %s, requeuing", key, err.Error())
 		}
@@ -150,7 +150,8 @@ func (c *Controller) processNextWorkItem() bool {
 	return true
 }
 
-func (c *Controller) syncHandler(key string) error {
+// SyncHandler reconciliation loop
+func (c *Controller) SyncHandler(key string) error {
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
 	if err != nil {
 		utilruntime.HandleError(fmt.Errorf("invalid resource key: %s", key))
@@ -234,4 +235,14 @@ func (c *Controller) handleObject(obj interface{}) {
 		c.enqueueCm(cm)
 		return
 	}
+}
+
+// SetConfigMapSynced setter for cache synced
+func (c *Controller) SetConfigMapSynced(value cache.InformerSynced) {
+	c.configMapSynced = value
+}
+
+// SetRecorder setter for recorder
+func (c *Controller) SetRecorder(r record.EventRecorder) {
+	c.recorder = r
 }

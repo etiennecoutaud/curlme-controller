@@ -8,6 +8,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/fake"
+	"reflect"
 	"testing"
 )
 
@@ -66,16 +67,13 @@ func TestVerifyValueFormat(t *testing.T) {
 		"joke-test=www.curl-a-joke.herokuapp.io",
 		"joke1=www.curl-a-joke.herokuapp.io",
 		"joke1_azerty.json=www.curl-a-joke.herokuapp.io",
+		"foo=127.0.0.1:8080",
 	}
 
 	NonValidTests := []string{
-		"joke=curl-a-joke.herokuapp",
+		"joke:curl-a-joke.herokuapp",
 		"joke =http://curl-a-joke.herokuapp.com",
-		"joke=https:curl-a-joke.herokuapp.com",
-		"joke=www",
-		"joke- test=www.curl-a-joke.herokuapp.io",
-		"joke:www.curl-a-joke.herokuapp.io",
-		"json=www.curl-a-joke.herokuapp.io toto=www.curl-a-joke.herokuapp.io",
+
 	}
 
 	for _, test := range validTests {
@@ -105,11 +103,19 @@ func TestSplitAnnotationValue(t *testing.T) {
 		output Output
 	}{
 		{
-			input: "foo=bar",
+			input: "foo:bar",
 			output: Output{
 				key:   "",
 				value: "",
 				err:   errors.New("annotation value not well format, expect value=curl-url"),
+			},
+		},
+		{
+			input: "foo=bar",
+			output: Output{
+				key:   "foo",
+				value: "bar",
+				err:   nil,
 			},
 		},
 		{
@@ -132,8 +138,8 @@ func TestSplitAnnotationValue(t *testing.T) {
 
 	for _, test := range tests {
 		key, value, err := utils.SplitAnnotationValue(test.input)
-		if key != test.output.key || value != test.output.value ||
-			(test.output.err == nil && err != nil) && (err.Error() != test.output.err.Error()) {
+		if key != test.output.key || value != test.output.value || !reflect.DeepEqual(test.output.err, err) {
+			//(test.output.err == nil && err != nil) && (err.Error() != test.output.err.Error()) {
 			t.Errorf("Expected: %s, %s, %v, Got: %s, %s, %v", test.output.key, test.output.value, test.output.err, key, value, err)
 		}
 	}

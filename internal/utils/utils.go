@@ -8,7 +8,7 @@ import (
 )
 
 const curlmeAnnotationKey = "x-k8s.io/curl-me-that"
-const annotationValueRegex = `^\S+\=(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$`
+const annotationValueRegex = `^\S+\=\S+$`
 
 // ContainsAnnotation check if ContainsAnnotation is present in annotation
 func ContainsAnnotation(cm metav1.Object) bool {
