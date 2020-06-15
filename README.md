@@ -1,7 +1,7 @@
 # CurlMe Controller
 
-![CurlMeController](https://github.com/etiennecoutaud/curlme-controller/workflows/CurlMeController/badge.svg)
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/etiennecoutaud/curlme-controller)
+[![CurlMeController](https://github.com/etiennecoutaud/curlme-controller/workflows/CurlMeController/badge.svg)](https://github.com/etiennecoutaud/curlme-controller/actions)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/etiennecoutaud/curlme-controller)](https://hub.docker.com/repository/docker/etiennecoutaud/curlme-controller)
 [![codecov](https://codecov.io/gh/etiennecoutaud/curlme-controller/branch/master/graph/badge.svg)](https://codecov.io/gh/etiennecoutaud/curlme-controller)
 [![Go Report Card](https://goreportcard.com/badge/github.com/etiennecoutaud/curlme-controller)](https://goreportcard.com/report/github.com/etiennecoutaud/curlme-controller)
 
@@ -39,8 +39,12 @@ $ kubectl apply -f https://raw.githubusercontent.com/etiennecoutaud/curlme-contr
 
 ## Run locally
 
-To run the app localy make sure you have `go 1.13` install and `KUBECONFIG` environment var set.
+To run the app localy make sure you have `go 1.14` install and `KUBECONFIG` environment var set.
 
 ```bash
 $ make run-local
 ```
+
+## Questions
+
+[docs/questions](docs/questions.md)

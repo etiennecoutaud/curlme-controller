@@ -6,11 +6,3 @@ metadata:
   annotations:
     x-k8s.io/curl-me-that: joke=curl-a-joke.herokuapp.com
 data: {}
-#---
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: no-example
-#  annotations:
-#    x-k8s.io/curl-me-that: joke =curl-a-joke.herokuapp.com
-#data: {}

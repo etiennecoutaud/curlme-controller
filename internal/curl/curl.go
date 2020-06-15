@@ -1,6 +1,7 @@
 package curl
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -27,6 +28,10 @@ func (c *Curl) CallingURL(url string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if resp.StatusCode != http.StatusOK {
+		return "", errors.New("status code: " + string(resp.StatusCode))
+	}
+
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
