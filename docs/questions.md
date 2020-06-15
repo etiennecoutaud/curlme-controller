@@ -10,4 +10,4 @@ This controller is very simple so there is no need of a template configuration m
 
 As the result is not predictible it's going to affect testing, because we need predictive data to compare the expect and the result during test.
 
-Controller must also manage errors which can be raised during execution
+Controller must also manage errors which can be raised during execution.

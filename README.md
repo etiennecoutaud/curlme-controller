@@ -5,11 +5,11 @@
 [![codecov](https://codecov.io/gh/etiennecoutaud/curlme-controller/branch/master/graph/badge.svg)](https://codecov.io/gh/etiennecoutaud/curlme-controller)
 [![Go Report Card](https://goreportcard.com/badge/github.com/etiennecoutaud/curlme-controller)](https://goreportcard.com/report/github.com/etiennecoutaud/curlme-controller)
 
-CurlMe controller is a simple Kubernetes controller that watch `ConfigMap` with `x-k8s.io/curl-me-that` annotation.
+CurlMe controller is a simple Kubernetes controller that watches `ConfigMap` with `x-k8s.io/curl-me-that` annotation.
 
 ## Overview
 
-CurMe controller watch `ConfigMap` ressource like below
+CurMe controller watches `ConfigMap` resources like below
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -20,9 +20,9 @@ metadata:
 data: {}
 ```
 
-`curl-a-joke.herokuapp.com` will be request and response body store into the configmap under `joke` key.
+`curl-a-joke.herokuapp.com` response request will be stored into the configmap datas under `joke` key.
 
-If request fail, a warning event will be raised
+If the request fails, a warning event will be raised
 
 ## Quickstart
 
@@ -39,7 +39,7 @@ $ kubectl apply -f https://raw.githubusercontent.com/etiennecoutaud/curlme-contr
 
 ## Run locally
 
-To run the app localy make sure you have `go 1.14` install and `KUBECONFIG` environment var set.
+To run the app locally make sure you have `go 1.14` install and `KUBECONFIG` environment var set.
 
 ```bash
 $ make run-local
