@@ -43,3 +43,8 @@ func formatURL(url string) string {
 	}
 	return "http://" + url
 }
+
+// SetClientHTTP setter for http client in case of test
+func (c *Curl) SetClientHTTP(client *http.Client) {
+	c.netClient = client
+}

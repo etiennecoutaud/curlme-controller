@@ -16,7 +16,7 @@ run-docker:
 	docker run ${DOCKER_IMG}:${DOCKER_TAG}
 
 test:
-	go test -coverprofile=coverage.txt ./internal/.../
+	go test -race -coverprofile=coverage.txt ./internal/.../
 
 lint:
 	golint -set_exit_status  ./...

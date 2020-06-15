@@ -162,13 +162,9 @@ func getKey(cm *corev1.ConfigMap, t *testing.T) string {
 
 func TestUpdateCMEmptyData(t *testing.T) {
 	f := newFixture(t)
-	fakeHTTPServer := fakehttpserver.New()
-	fakeHTTPServer.Run()
-
 	key := "joke"
 	body := "this is an awesome joke !"
-	fakeHTTPServer.SetBody(body)
-	fakeHTTPServer.SetStatusCode(http.StatusOK)
+	fakeHTTPServer := fakehttpserver.New(body, http.StatusOK)
 
 	initialCm := newConfigMap("test",
 		map[string]string{
@@ -191,12 +187,9 @@ func TestUpdateCMEmptyData(t *testing.T) {
 
 func TestUpdateCMData(t *testing.T) {
 	f := newFixture(t)
-	fakeHTTPServer := fakehttpserver.New()
-	fakeHTTPServer.Run()
 	key := "joke"
 	body := "this is an awesome joke !"
-	fakeHTTPServer.SetBody(body)
-	fakeHTTPServer.SetStatusCode(http.StatusOK)
+	fakeHTTPServer := fakehttpserver.New(body, http.StatusOK)
 
 	initialCm := newConfigMap("test",
 		map[string]string{

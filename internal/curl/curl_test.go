@@ -9,8 +9,8 @@ import (
 
 func TestCurl_CallingURL(t *testing.T) {
 
-	fakeHTTPServer := fakehttpserver.New()
-	fakeHTTPServer.Run()
+	//fakeHTTPServer := fakehttpserver.New()
+	//fakeHTTPServer.Run()
 
 
 	tests := []struct{
@@ -48,14 +48,13 @@ func TestCurl_CallingURL(t *testing.T) {
 
 
 	for _, test := range tests {
-		fakeHTTPServer.SetBody(test.body)
-		fakeHTTPServer.SetStatusCode(test.statusCode)
-
+		f := fakehttpserver.New(test.body, test.statusCode)
 		c := curl.New()
-		resBody, err := c.CallingURL(fakeHTTPServer.GetServerAddr())
+		c.SetClientHTTP(f.GetServer().Client())
+		resBody, err := c.CallingURL(f.GetServerAddr())
 		if resBody != test.body || (err != nil && test.isExpectedErrNil) {
 			t.Errorf("expect %s, got: %s, %v", test.body, resBody, err)
 		}
 	}
-	fakeHTTPServer.Stop()
+	//fakeHTTPServer.Stop()
 }
