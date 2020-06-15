@@ -9,43 +9,37 @@ import (
 
 func TestCurl_CallingURL(t *testing.T) {
 
-	//fakeHTTPServer := fakehttpserver.New()
-	//fakeHTTPServer.Run()
-
-
-	tests := []struct{
-		body string
-		statusCode int
+	tests := []struct {
+		body             string
+		statusCode       int
 		isExpectedErrNil bool
 	}{
 		{
-			body: "ok",
-			statusCode: http.StatusOK,
+			body:             "ok",
+			statusCode:       http.StatusOK,
 			isExpectedErrNil: true,
 		},
 		{
-			body: "toto",
-			statusCode: http.StatusOK,
+			body:             "toto",
+			statusCode:       http.StatusOK,
 			isExpectedErrNil: true,
 		},
 		{
-			body: "tutu",
-			statusCode: http.StatusOK,
+			body:             "tutu",
+			statusCode:       http.StatusOK,
 			isExpectedErrNil: true,
 		},
 		{
-			body: "",
-			statusCode: http.StatusInternalServerError,
+			body:             "",
+			statusCode:       http.StatusInternalServerError,
 			isExpectedErrNil: false,
 		},
 		{
-			body: "",
-			statusCode: http.StatusNotFound,
+			body:             "",
+			statusCode:       http.StatusNotFound,
 			isExpectedErrNil: false,
 		},
-
 	}
-
 
 	for _, test := range tests {
 		f := fakehttpserver.New(test.body, test.statusCode)
@@ -56,5 +50,4 @@ func TestCurl_CallingURL(t *testing.T) {
 			t.Errorf("expect %s, got: %s, %v", test.body, resBody, err)
 		}
 	}
-	//fakeHTTPServer.Stop()
 }

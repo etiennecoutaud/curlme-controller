@@ -29,15 +29,15 @@ var (
 type fixture struct {
 	t *testing.T
 
-	client *k8sfake.Clientset
+	client          *k8sfake.Clientset
 	configMapLister []*corev1.ConfigMap
-	actions []core.Action
-	objects []runtime.Object
+	actions         []core.Action
+	objects         []runtime.Object
 }
 
 func newFixture(t *testing.T) *fixture {
 	return &fixture{
-		t: t,
+		t:       t,
 		objects: []runtime.Object{},
 	}
 }
@@ -45,9 +45,9 @@ func newFixture(t *testing.T) *fixture {
 func newConfigMap(name string, annotation map[string]string, data map[string]string) *corev1.ConfigMap {
 	return &corev1.ConfigMap{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: metav1.NamespaceDefault,
-			Annotations:annotation,
+			Name:        name,
+			Namespace:   metav1.NamespaceDefault,
+			Annotations: annotation,
 		},
 		Data: data,
 	}
@@ -179,10 +179,9 @@ func TestUpdateCMEmptyData(t *testing.T) {
 	f.configMapLister = append(f.configMapLister, initialCm)
 	f.objects = append(f.objects, initialCm)
 
-
 	f.expectUpdateCMStatusAction(expectedCm)
 	f.run(getKey(initialCm, t))
-	fakeHTTPServer.Stop()
+
 }
 
 func TestUpdateCMData(t *testing.T) {
@@ -202,12 +201,11 @@ func TestUpdateCMData(t *testing.T) {
 			"x-k8s.io/curl-me-that": key + "=" + fakeHTTPServer.GetServerAddr()},
 		map[string]string{
 			"foo": "bar",
-			key: body,
+			key:   body,
 		})
 	f.configMapLister = append(f.configMapLister, initialCm)
 	f.objects = append(f.objects, initialCm)
 
 	f.expectUpdateCMStatusAction(expectedCm)
 	f.run(getKey(initialCm, t))
-	fakeHTTPServer.Stop()
 }

@@ -73,7 +73,6 @@ func TestVerifyValueFormat(t *testing.T) {
 	NonValidTests := []string{
 		"joke:curl-a-joke.herokuapp",
 		"joke =http://curl-a-joke.herokuapp.com",
-
 	}
 
 	for _, test := range validTests {
